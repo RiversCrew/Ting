@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ting</string>
+    <string name="logo_title">Ting</string>
+    <string name="copyrithy">Copyright © 2015 - 2016 Cen. All Rights Reserved</string>
+    <string name="search_hint">搜索音乐、歌手、歌词</string>
+    <string name="song_fragment_null">正在加载本机音乐</string>
+    <string name="album_fragment_null">没有找到可播放的专辑</string>
+    <string name="artist_fragment_null">没有找到存在的艺术家</string>
+</resources>

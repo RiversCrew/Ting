@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_title"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/main_title"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/main_title_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/maintitle_menu" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5">
+
+                    <TextView
+                        android:id="@+id/main_title_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/logo_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/main_title_text_size" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/main_title_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/maintitle_search" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/main_tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:background="@color/white"
+                android:elevation="@dimen/common_elevation"
+                app:tabIndicatorColor="@color/tablayout_indicator"
+                app:tabSelectedTextColor="@color/tablayout_selectedtext"
+                app:tabTextColor="@color/tablayout_text" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/main_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8" />
+
+        </LinearLayout>
+
+
+        <include
+            layout="@layout/song_minibar"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+
+</LinearLayout>

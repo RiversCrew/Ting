@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/logo">
+
+    <ImageView
+        android:id="@+id/logo_about_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/logo_title_margin"
+        android:src="@mipmap/about_logo"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/logo_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo_about_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/logo_content_margin"
+        android:text="@string/logo_title"
+        android:textColor="@color/logo_title"
+        android:textSize="@dimen/title_text_size"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/logo_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/logo_content_margin"
+        android:text="听   见   ·   好   时   光   ！"
+        android:textColor="@color/logo_title"
+        android:textSize="@dimen/content_text_size"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/logo_copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/copyright_margin"
+        android:text="@string/copyrithy"
+        android:textColor="@color/logo_title"
+        android:textSize="@dimen/copyright_text_size"
+        android:visibility="invisible" />
+
+</RelativeLayout>

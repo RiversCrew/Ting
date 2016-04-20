@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_title"
+    android:orientation="vertical">
+
+    <!-- 搜索页面的顶部布局-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/main_title"
+        android:elevation="@dimen/common_elevation"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/search_back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/search_back" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/search_edittext"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6.5"
+            android:paddingRight="@dimen/search_edit_padding">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:drawableEnd="@mipmap/maintitle_search"
+                android:hint="@string/search_hint"
+                android:paddingLeft="@dimen/search_edit_padding"
+                android:paddingRight="@dimen/search_edit_padding"
+                android:singleLine="true"
+                android:textColorHint="@color/edit_color"
+                android:textCursorDrawable="@drawable/cursor_style" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!-- 搜索页面的下面布局-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:background="@color/white"></LinearLayout>
+</LinearLayout>

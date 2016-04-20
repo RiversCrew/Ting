@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/minibar"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="@color/minibar_bg"
+    android:orientation="vertical"
+    android:visibility="invisible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="@dimen/minibar_padding">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/bar_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@mipmap/empty_music" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/minibar_marginLeft"
+            android:layout_weight="5">
+
+            <TextView
+                android:id="@+id/bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/minibar_marginTop"
+                android:text="Worth It"
+                android:textColor="@color/white"
+                android:textSize="@dimen/minibar_title_size" />
+
+            <TextView
+                android:id="@+id/bar_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bar_title"
+                android:text="Fifth Harmony/Kid Ink"
+                android:textColor="@color/nimibar_artist_color"
+                android:textSize="@dimen/minibar_artist_size" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/song_play"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@mipmap/playbar_btn_pause" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/song_next"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@mipmap/playbar_btn_next" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

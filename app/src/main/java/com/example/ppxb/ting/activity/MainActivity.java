@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private RelativeLayout mTitle_menu, mTitle_search;
-    private LinearLayout mBar;
+    public static LinearLayout mBar;
     private ImageView mBarimg, mPlay, mNext;
     private TextView mBartitle, mBarartist, mTitlte_text;
     public static String title, artist;

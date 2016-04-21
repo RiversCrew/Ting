@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ppxb.ting.R;
+import com.example.ppxb.ting.activity.MainActivity;
 import com.example.ppxb.ting.adapter.SongListAdapter;
 import com.example.ppxb.ting.model.Song;
 import com.example.ppxb.ting.service.SongService;
@@ -41,7 +42,7 @@ public class SongFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                if (mSongList.size() > 10)
+                if (mSongList.size() > 10&& MainActivity.mBar.getVisibility() == View.VISIBLE)
                     mSongListView.addFooterView(below_listview, null, false);//使footer不可点击
                 adapter = new SongListAdapter(getContext(), mSongList);
                 mSongListView.setAdapter(adapter);

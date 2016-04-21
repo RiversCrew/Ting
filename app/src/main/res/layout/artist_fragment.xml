@@ -4,6 +4,20 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <GridView
+            android:id="@+id/artist_fragment_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:numColumns="2"
+            android:layout_weight="9" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/artist_fragment_null"
         android:layout_width="wrap_content"

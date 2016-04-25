@@ -1,11 +1,7 @@
 package com.example.ppxb.ting.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ppxb.ting.R;
-import com.example.ppxb.ting.tool.FastBlur;
 import com.example.ppxb.ting.tool.SimpleUtil;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,16 +26,14 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
     private ImageView mDeskPre, mDeskPlay, mDeskNext;
     private Animation operatingAnim;
     private LinearInterpolator lin;
-    private int isPause;
     private String title, artist;
-    private Bitmap img, blur;
-    private deskReciver deskReciver;
+    private Bitmap blur, album;
+    private int isplay;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 mSongBg.setImageBitmap(blur);
-                mAlbum.setImageBitmap(img);
                 mDeskTitle.setText(title);
                 mDeskArtist.setText(artist);
             }
@@ -61,8 +54,6 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void initView() {
-        deskReciver = new deskReciver();
-        SimpleUtil.regReciver(deskReciver, this, "playing");
         mSongDetailBack = (ImageView) findViewById(R.id.song_detail_back);
         mSongBg = (ImageView) findViewById(R.id.backgroud);
         mAlbum = (CircleImageView) findViewById(R.id.album_img);
@@ -82,79 +73,56 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);
         mAlbum.startAnimation(operatingAnim);
+        isplay = getIntent().getIntExtra("isplay", 0);
+        if (isplay == 1) {
+            mDeskPlay.setImageResource(R.mipmap.play_btn_play);
+        } else {
+            mDeskPlay.setImageResource(R.mipmap.play_btn_pause);
+        }
+        title = getIntent().getStringExtra("title");
+        artist = getIntent().getStringExtra("artist");
+        blur = SimpleUtil.getBitmap(getIntent(), "blur");
+        album = SimpleUtil.getBitmap(getIntent(), "img");
+        mSongBg.setImageBitmap(blur);
+        mAlbum.setImageBitmap(album);
+        mDeskTitle.setText(title);
+        mDeskArtist.setText(artist);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.song_detail_back:
-                finish();
-                break;
-            case R.id.desk_btn_next:
-                if (isPause == 1)
-                    handler.sendEmptyMessage(1);
-                if (isPause == 2)
-                    handler.sendEmptyMessage(1);
-                break;
-            case R.id.desk_btn_prev:
-                if (isPause == 1)
-                    handler.sendEmptyMessage(1);
-                if (isPause == 2)
-                    handler.sendEmptyMessage(1);
+                onBackPressed();
                 break;
             case R.id.desk_btn_play:
-                if (isPause == 1) {
-                    mDeskPlay.setImageResource(R.mipmap.play_btn_play);
-                    isPause = 2;
+                if (MainActivity.myservice.player.isPlaying()) {
+                    MainActivity.myservice.pause();
+                    mDeskPlay.setImageResource(R.mipmap.playbar_btn_play);
+                    isplay = 1;
                 } else {
-                    mDeskPlay.setImageResource(R.mipmap.play_btn_pause);
-                    isPause = 1;
+                    MainActivity.myservice.going();
+                    mDeskPlay.setImageResource(R.mipmap.playbar_btn_pause);
+                    isplay = 2;
                 }
                 break;
-        }
-    }
-
-    class deskReciver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            title = intent.getStringExtra("title");
-            artist = intent.getStringExtra("artist");
-            byte[] bis = intent.getByteArrayExtra("img");
-            img = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-            doBlur(img);
-        }
-    }
-
-    public void doBlur(final Bitmap original) {
-        new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                Bitmap temp = null;
-                Bitmap result = null;
-                try {
-                    if (original == null) {
-                        temp = BitmapFactory.decodeResource(getResources(), R.mipmap.empty_music);
-                        result = FastBlur.doBlur(temp, 10, false);
-                        return result;
-                    }
-                    result = FastBlur.doBlur(original, 10, false);
-                } catch (Error e) {
-                    e.printStackTrace();
+            case R.id.desk_btn_next:
+                MainActivity.myservice.next();
+                if (isplay == 1) {
+                    mDeskPlay.setImageResource(R.mipmap.playbar_btn_pause);
                 }
-                return result;
-            }
+                break;
+            case R.id.desk_btn_prev:
 
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                blur = bitmap;
-                handler.sendEmptyMessage(0);
-            }
-        }.execute();
+                break;
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(deskReciver);
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("isplay", isplay);
+        setResult(100, intent);
+        finish();
     }
 }

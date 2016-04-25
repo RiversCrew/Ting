@@ -3,6 +3,7 @@ package com.example.ppxb.ting.tool;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.example.ppxb.ting.R;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by ppxb on 2016/4/11.
@@ -72,5 +75,18 @@ public class SimpleUtil {
             return SimpleUtil.small(bitmap);
         } else
             return SimpleUtil.small(getImg);
+    }
+
+    public static byte[] sendBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] bitmapByte = baos.toByteArray();
+        return bitmapByte;
+    }
+
+    public static Bitmap getBitmap(Intent intent, String code) {
+        byte[] bis = intent.getByteArrayExtra(code);
+        Bitmap img = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+        return img;
     }
 }

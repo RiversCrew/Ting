@@ -4,10 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -30,7 +27,6 @@ import com.example.ppxb.ting.fragment.ArtistFragment;
 import com.example.ppxb.ting.fragment.SongFragment;
 import com.example.ppxb.ting.reciver.SongInfoReciver;
 import com.example.ppxb.ting.service.SongService;
-import com.example.ppxb.ting.tool.FastBlur;
 import com.example.ppxb.ting.tool.SimpleUtil;
 
 import java.util.ArrayList;
@@ -50,10 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<String> mTitleList;
     public static SongService myservice;
     private SongInfoReciver reciver;
+    private int isplay;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
+                mPlay.setImageResource(R.mipmap.playbar_btn_pause);
                 mBar.setVisibility(View.VISIBLE);
                 mBartitle.setText(reciver.getTitle());
                 mBarartist.setText(reciver.getArtist());
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void initView() {
-        reciver = new SongInfoReciver(handler);
+        reciver = new SongInfoReciver(this, handler);
         SimpleUtil.regReciver(reciver, this, "play");
         mTitle_menu = (RelativeLayout) findViewById(R.id.main_title_menu);
         mTitle_search = (RelativeLayout) findViewById(R.id.main_title_search);
@@ -93,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTitle_search.setOnClickListener(this);
         mPlay.setOnClickListener(this);
         mNext.setOnClickListener(this);
+        mBar.setOnClickListener(this);
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -136,39 +135,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (MainActivity.myservice.player.isPlaying()) {
                 MainActivity.myservice.pause();
                 mPlay.setImageResource(R.mipmap.playbar_btn_play);
+                isplay = 1;
             } else {
                 MainActivity.myservice.going();
                 mPlay.setImageResource(R.mipmap.playbar_btn_pause);
+                isplay = 2;
             }
         }
         if (v == mNext) {
             MainActivity.myservice.next();
+            if (isplay == 1) {
+                mPlay.setImageResource(R.mipmap.playbar_btn_pause);
+            }
         }
-    }
-
-    public void doBlur(final Bitmap original) {
-        new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-                Bitmap temp = null;
-                Bitmap result = null;
-                try {
-                    if (original == null) {
-                        temp = BitmapFactory.decodeResource(getResources(), R.mipmap.empty_music);
-                        result = FastBlur.doBlur(temp, 10, false);
-                        return result;
-                    }
-                    result = FastBlur.doBlur(original, 10, false);
-                } catch (Error e) {
-                    e.printStackTrace();
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-            }
-        }.execute();
+        if (v == mBar) {
+            Intent intent = new Intent(MainActivity.this, SongDetailActivity.class);
+            intent.putExtra("isplay", isplay);
+            intent.putExtra("blur", SimpleUtil.sendBitmap(reciver.getBlur()));
+            intent.putExtra("img", SimpleUtil.sendBitmap(reciver.getImg()));
+            intent.putExtra("title", reciver.getTitle());
+            intent.putExtra("artist", reciver.getArtist());
+            startActivityForResult(intent, 100);
+        }
     }
 
     @Override

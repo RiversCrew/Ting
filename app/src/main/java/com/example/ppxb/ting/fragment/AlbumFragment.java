@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ppxb.ting.R;
-import com.example.ppxb.ting.activity.MainActivity;
 import com.example.ppxb.ting.adapter.AlbumListAdapter;
 import com.example.ppxb.ting.model.Song;
 import com.example.ppxb.ting.tool.SongUtil;
@@ -33,7 +32,7 @@ public class AlbumFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    if (mAlbumList.size() > 10 && MainActivity.mBar.getVisibility() == View.VISIBLE)
+                    if (mAlbumList.size() > 10 )
                         mAlbumListView.addFooterView(below_listview, null, false);
                     adapter = new AlbumListAdapter(getContext(), mAlbumList);
                     mAlbumListView.setAdapter(adapter);

@@ -37,11 +37,10 @@
             android:layout_weight="6.5"
             android:paddingRight="@dimen/search_edit_padding">
 
-            <EditText
+            <com.example.ppxb.ting.widget.ClearEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:drawableEnd="@mipmap/maintitle_search"
                 android:hint="@string/search_hint"
                 android:paddingLeft="@dimen/search_edit_padding"
                 android:paddingRight="@dimen/search_edit_padding"

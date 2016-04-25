@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import com.example.ppxb.ting.R;
 import com.example.ppxb.ting.tool.FastBlur;
-import com.example.ppxb.ting.tool.ServiceUtil;
 import com.example.ppxb.ting.tool.SimpleUtil;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -84,18 +82,6 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         lin = new LinearInterpolator();
         operatingAnim.setInterpolator(lin);
         mAlbum.startAnimation(operatingAnim);
-        mSongBg.setImageBitmap(MainActivity.blur);
-        mAlbum.setImageBitmap(MainActivity.album);
-        mDeskTitle.setText(MainActivity.title);
-        mDeskArtist.setText(MainActivity.artist);
-        Log.e("tag", MainActivity.isPause+"");
-        if (MainActivity.isPause == 2) {
-            isPause = 2;
-            handler.sendEmptyMessage(1);
-        } else {
-            isPause = 1;
-            handler.sendEmptyMessage(2);
-        }
     }
 
     @Override
@@ -109,23 +95,19 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
                     handler.sendEmptyMessage(1);
                 if (isPause == 2)
                     handler.sendEmptyMessage(1);
-                ServiceUtil.startBroadcastNext(SongDetailActivity.this);
                 break;
             case R.id.desk_btn_prev:
                 if (isPause == 1)
                     handler.sendEmptyMessage(1);
                 if (isPause == 2)
                     handler.sendEmptyMessage(1);
-                ServiceUtil.startBroadcastPre(SongDetailActivity.this);
                 break;
             case R.id.desk_btn_play:
                 if (isPause == 1) {
                     mDeskPlay.setImageResource(R.mipmap.play_btn_play);
-                    ServiceUtil.startBrodcastControl(SongDetailActivity.this, isPause);
                     isPause = 2;
                 } else {
                     mDeskPlay.setImageResource(R.mipmap.play_btn_pause);
-                    ServiceUtil.startBrodcastControl(SongDetailActivity.this, isPause);
                     isPause = 1;
                 }
                 break;

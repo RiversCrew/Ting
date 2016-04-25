@@ -1,8 +1,8 @@
 package com.example.ppxb.ting.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,13 +10,12 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,43 +28,36 @@ import com.example.ppxb.ting.adapter.MainTabAdapter;
 import com.example.ppxb.ting.fragment.AlbumFragment;
 import com.example.ppxb.ting.fragment.ArtistFragment;
 import com.example.ppxb.ting.fragment.SongFragment;
-import com.example.ppxb.ting.reciver.newSongReciver;
+import com.example.ppxb.ting.reciver.SongInfoReciver;
+import com.example.ppxb.ting.service.SongService;
 import com.example.ppxb.ting.tool.FastBlur;
-import com.example.ppxb.ting.tool.ServiceUtil;
 import com.example.ppxb.ting.tool.SimpleUtil;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private RelativeLayout mTitle_menu, mTitle_search;
-    public static LinearLayout mBar;
+    private RelativeLayout mTitle_menu;
+    private RelativeLayout mTitle_search;
+    private LinearLayout mBar;
     private ImageView mBarimg, mPlay, mNext;
     private TextView mBartitle, mBarartist, mTitlte_text;
-    public static String title, artist;
-    private Bitmap img;
-    public static Bitmap blur, album;
-    private DrawerLayout mLeft_menu;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private ServiceConnection serviceConnection;
     private MainTabAdapter adapter;
     private FragmentManager fm;
     private ArrayList<Fragment> mFragmentList;
     private ArrayList<String> mTitleList;
-    private barReciver reciver;
-    private newSongReciver newSongReciver;
-    public static int isPause;
+    public static SongService myservice;
+    private SongInfoReciver reciver;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 mBar.setVisibility(View.VISIBLE);
-                mBar.setOnClickListener(MainActivity.this);
-                mBarimg.setImageBitmap(img);
-                mBartitle.setText(title);
-                mBarartist.setText(artist);
-            } else if (msg.what == 1) {
-                isPause = 2;
-                mPlay.setImageResource(R.mipmap.playbar_btn_pause);
+                mBartitle.setText(reciver.getTitle());
+                mBarartist.setText(reciver.getArtist());
+                mBarimg.setImageBitmap(reciver.getImg());
             }
         }
     };
@@ -76,14 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SimpleUtil.closeToTop(this);
         setContentView(R.layout.activity_main);
         initView();
+        initBindService();
         initData();
     }
 
     public void initView() {
-        reciver = new barReciver();
-        newSongReciver = new newSongReciver(handler);
-        SimpleUtil.regReciver(reciver, this, "playing");
-        SimpleUtil.regReciver(newSongReciver, this, "newsong");
+        reciver = new SongInfoReciver(handler);
+        SimpleUtil.regReciver(reciver, this, "play");
         mTitle_menu = (RelativeLayout) findViewById(R.id.main_title_menu);
         mTitle_search = (RelativeLayout) findViewById(R.id.main_title_search);
         mBar = (LinearLayout) findViewById(R.id.minibar);
@@ -92,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBartitle = (TextView) findViewById(R.id.bar_title);
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
-        mLeft_menu = (DrawerLayout) findViewById(R.id.main_left_menu);
         mBarimg = (ImageView) findViewById(R.id.bar_img);
         mPlay = (ImageView) findViewById(R.id.song_play);
         mNext = (ImageView) findViewById(R.id.song_next);
@@ -103,7 +93,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTitle_search.setOnClickListener(this);
         mPlay.setOnClickListener(this);
         mNext.setOnClickListener(this);
-        isPause = 1;
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder service) {
+                myservice = ((SongService.songBinder) service).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        };
+    }
+
+    public void initBindService() {
+        Intent intent = new Intent(this, SongService.class);
+        startService(intent);
+        intent = new Intent(this, SongService.class);
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
     public void initData() {
@@ -125,44 +132,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.main_title_menu:
-                mLeft_menu.openDrawer(GravityCompat.START);
-                break;
-            case R.id.main_title_search:
-                startActivity(new Intent(MainActivity.this, SearchActivity.class));
-                break;
-            case R.id.song_play:
-                if (isPause == 1) {
-                    mPlay.setImageResource(R.mipmap.playbar_btn_play);
-                    ServiceUtil.startBrodcastControl(MainActivity.this, isPause);
-                    isPause = 2;
-                } else {
-                    mPlay.setImageResource(R.mipmap.playbar_btn_pause);
-                    ServiceUtil.startBrodcastControl(MainActivity.this, isPause);
-                    isPause = 1;
-                }
-                break;
-            case R.id.song_next:
-                ServiceUtil.startBroadcastNext(MainActivity.this);
-                break;
-            case R.id.minibar:
-                startActivity(new Intent(MainActivity.this, SongDetailActivity.class));
-                overridePendingTransition(R.anim.tran_left_in, R.anim.tran_left_out);
-                break;
+        if (v == mPlay) {
+            if (MainActivity.myservice.player.isPlaying()) {
+                MainActivity.myservice.pause();
+                mPlay.setImageResource(R.mipmap.playbar_btn_play);
+            } else {
+                MainActivity.myservice.going();
+                mPlay.setImageResource(R.mipmap.playbar_btn_pause);
+            }
         }
-    }
-
-    class barReciver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            title = intent.getStringExtra("title");
-            artist = intent.getStringExtra("artist");
-            byte[] bis = intent.getByteArrayExtra("img");
-            img = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-            album = img;
-            doBlur(img);
-            handler.sendEmptyMessage(0);
+        if (v == mNext) {
+            MainActivity.myservice.next();
         }
     }
 
@@ -187,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                blur = bitmap;
             }
         }.execute();
     }
@@ -196,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(reciver);
-        unregisterReceiver(newSongReciver);
+        Intent intent = new Intent(this, SongService.class);
+        stopService(intent);
+        unbindService(serviceConnection);
     }
 }

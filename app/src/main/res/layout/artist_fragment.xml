@@ -13,8 +13,8 @@
             android:id="@+id/artist_fragment_gridview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:numColumns="2"
-            android:layout_weight="9" />
+            android:layout_weight="9"
+            android:numColumns="2" />
 
     </LinearLayout>
 
